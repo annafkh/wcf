@@ -1,0 +1,71 @@
+---
+import Brand from "./Brand.astro";
+import Icon from "./Icon.astro";
+import { navigation } from "../data/company";
+---
+
+<header class="site-header">
+  <div class="container nav-shell">
+    <Brand />
+    <button
+      class="menu-toggle"
+      aria-label="Buka menu navigasi"
+      aria-controls="main-nav"
+      aria-expanded="false"
+      hidden
+    >
+      <Icon name="menu" />
+      <span>Menu</span>
+    </button>
+    <nav id="main-nav" aria-label="Navigasi utama">
+      {navigation.map((item) => (
+        <a href={item.href}>{item.label}</a>
+      ))}
+      <a href="#kontak" class="nav-cta">
+        Hubungi Kami <Icon name="arrow" size={16} />
+      </a>
+    </nav>
+  </div>
+</header>
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
+  const nav = document.querySelector<HTMLElement>("#main-nav");
+  if (toggle && nav) {
+    toggle.hidden = false;
+    document.documentElement.classList.add("nav-ready");
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute(
+        "aria-label",
+        open ? "Tutup menu navigasi" : "Buka menu navigasi",
+      );
+      nav.classList.toggle("is-open", open);
+    };
+    toggle.addEventListener("click", () =>
+      setOpen(toggle.getAttribute("aria-expanded") !== "true"),
+    );
+    nav
+      .querySelectorAll("a")
+      .forEach((a) => a.addEventListener("click", () => setOpen(false)));
+    document.addEventListener("keydown", (e) => {
+      if (
+        e.key === "Escape" &&
+        toggle.getAttribute("aria-expanded") === "true"
+      ) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    document.addEventListener("click", (e) => {
+      if (
+        e.target instanceof Node &&
+        !nav.contains(e.target) &&
+        !toggle.contains(e.target)
+      )
+        setOpen(false);
+    });
+    matchMedia("(min-width: 1200px)").addEventListener("change", () =>
+      setOpen(false),
+    );
+  }
+</script>

@@ -1,0 +1,64 @@
+---
+import Brand from "./Brand.astro";
+import { company, navigation } from "../data/company";
+import { services } from "../data/services";
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <Brand />
+        <p>
+          Mitra outsourcing profesional untuk mendukung operasional bisnis yang
+          cepat, andal, dan efisien.
+        </p>
+        <address>{company.address}</address>
+      </div>
+      <div>
+        <h2>Navigasi</h2>
+        <ul>
+          {navigation
+            .filter((item) => item.href !== "#beranda")
+            .map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))}
+        </ul>
+      </div>
+      <div>
+        <h2>Layanan</h2>
+        <ul>
+          {services.map((service) => (
+            <li>
+              <a href="#layanan">{service.title}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h2>Mari terhubung</h2>
+        <ul>
+          {company.phones.map((phone) => (
+            <li>
+              <a href={phone.href}>{phone.label}</a>
+            </li>
+          ))}
+          <li>
+            <a href={`mailto:${company.email}`}>{company.email}</a>
+          </li>
+          <li>
+            <a class="footer-wa" href={company.whatsapp}>
+              Konsultasi via WhatsApp ↗
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 PT Wish Care Fast. All Rights Reserved.</p>
+      <a href="#beranda">Kembali ke atas ↑</a>
+    </div>
+  </div>
+</footer>

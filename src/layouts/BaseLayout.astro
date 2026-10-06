@@ -1,0 +1,111 @@
+---
+import "../styles/global.css";
+import { company, brandLogo } from "../data/company";
+const title = "PT Wish Care Fast | Jasa Outsourcing Profesional Malang";
+const description =
+  "PT Wish Care Fast menyediakan jasa outsourcing administrasi, cleaning service, security, driver, IT service, dan operator produksi di Malang. Hubungi WCF.";
+const canonical = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site).href
+  : undefined;
+const image = Astro.site
+  ? new URL("/images/og.png", Astro.site).href
+  : undefined;
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": ["Organization", "LocalBusiness"],
+  name: company.name,
+  alternateName: company.shortName,
+  description: company.description,
+  foundingDate: company.founded,
+  ...(canonical
+    ? {
+        url: canonical,
+        "@id": `${canonical}#organization`,
+        logo: new URL(brandLogo.src, Astro.site).href,
+      }
+    : {}),
+  telephone: "+6281333949063",
+  email: company.email,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "JL. Raya Sekarpuro 85, Kec. Pakis",
+    addressLocality: "Kab. Malang",
+    addressCountry: "ID",
+  },
+  contactPoint: company.phones.map((phone) => ({
+    "@type": "ContactPoint",
+    telephone: phone.href.slice(4),
+    contactType: "customer service",
+  })),
+};
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#102653" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:site_name" content={company.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    {image && (
+      <>
+        <meta property="og:image" content={image} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta
+          property="og:image:alt"
+          content="PT Wish Care Fast — Solusi Tenaga Kerja Profesional"
+        />
+      </>
+    )}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {image && <meta name="twitter:image" content={image} />}
+    <link
+      rel="preload"
+      as="image"
+      href="/images/gallery/koordinasi-petugas.webp"
+    />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(structuredData).replace(/</g, "\\u003c")}
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      Lewati navigasi
+    </a>
+    <slot />
+    <script>
+      if (
+        "IntersectionObserver" in window &&
+        !matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("revealed");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.08 },
+        );
+        document
+          .querySelectorAll("[data-reveal]")
+          .forEach((element) => observer.observe(element));
+      }
+    </script>
+  </body>
+</html>

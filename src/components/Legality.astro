@@ -1,0 +1,33 @@
+---
+import { legality } from "../data/legality";
+import Icon from "./Icon.astro";
+---
+
+<section id="legalitas" class="section soft" aria-labelledby="legality-title">
+  <div class="container">
+    <div class="section-heading" data-reveal>
+      <div>
+        <p class="eyebrow">04 / LEGALITAS PERUSAHAAN</p>
+        <h2 id="legality-title">
+          Fondasi kerja sama
+          <br />
+          yang terpercaya.
+        </h2>
+      </div>
+      <p>
+        Informasi legalitas PT Wish Care Fast sebagai bagian dari transparansi
+        perusahaan.
+      </p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 legality-grid">
+      {legality.map((item) => (
+        <article class="legal-card" data-reveal>
+          <Icon name="document" size={29} />
+          <p class="legal-label">{item.label}</p>
+          <h3>{item.title}</h3>
+          <p class="legal-number">{item.number}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

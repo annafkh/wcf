@@ -1,0 +1,54 @@
+---
+import { company } from "../data/company";
+import Icon from "./Icon.astro";
+---
+
+<section id="tentang" class="section" aria-labelledby="about-title">
+  <div class="container about-grid">
+    <div class="about-panel" data-reveal>
+      <span class="eyebrow">SEJAK {company.founded}</span>
+      <span class="about-big">
+        Manusia
+        <br />
+        yang tepat.
+        <br />
+        <em>
+          Langkah
+          <br />
+          yang hebat.
+        </em>
+      </span>
+      <div class="about-location">
+        <Icon name="pin" size={19} /> Pakis, Kabupaten Malang
+      </div>
+    </div>
+    <div class="about-copy" data-reveal>
+      <p class="eyebrow">01 / TENTANG PERUSAHAAN</p>
+      <h2 id="about-title">
+        Mitra tenaga kerja.
+        <br />
+        <span class="muted-heading">Bagian dari kemajuan Anda.</span>
+      </h2>
+      <p>{company.description}</p>
+      <p>
+        Melalui layanan administrasi, kebersihan, keamanan, pengemudi, IT, dan
+        operator produksi, kami mendukung berbagai kebutuhan tenaga kerja
+        perusahaan.
+      </p>
+      <dl class="company-facts">
+        <div>
+          <dt>Nama perusahaan</dt>
+          <dd>{company.name}</dd>
+        </div>
+        <div>
+          <dt>Bidang usaha</dt>
+          <dd>{company.business}</dd>
+        </div>
+      </dl>
+      <a class="text-link navy-link" href="#kontak">
+        Kenali kebutuhan bisnis Anda bersama kami{" "}
+        <Icon name="arrow" size={19} />
+      </a>
+    </div>
+  </div>
+</section>

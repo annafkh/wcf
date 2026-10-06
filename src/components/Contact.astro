@@ -1,0 +1,60 @@
+---
+import { company } from "../data/company";
+import Icon from "./Icon.astro";
+---
+
+<section id="kontak" class="section" aria-labelledby="contact-title">
+  <div class="container contact-grid">
+    <div data-reveal>
+      <p class="eyebrow">05 / HUBUNGI KAMI</p>
+      <h2 id="contact-title">
+        Kerja sama yang baik
+        <br />
+        dimulai dari percakapan.
+      </h2>
+      <p class="section-description">
+        Ceritakan kebutuhan tenaga kerja perusahaan Anda. Mari temukan dukungan
+        yang sesuai bersama WCF.
+      </p>
+      <a class="button button-navy" href={company.whatsapp}>
+        <Icon name="chat" size={20} /> Konsultasi via WhatsApp{" "}
+        <Icon name="arrow" size={18} />
+      </a>
+    </div>
+    <div class="contact-details" data-reveal>
+      <div class="contact-row">
+        <Icon name="pin" />
+        <div>
+          <h3>Kunjungi kantor kami</h3>
+          <address>{company.address}</address>
+          <a
+            class="text-link navy-link"
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(company.address)}`}
+          >
+            Cari alamat di Google Maps <Icon name="arrow" size={16} />
+          </a>
+        </div>
+      </div>
+      <div class="contact-row">
+        <Icon name="phone" />
+        <div>
+          <h3>Telepon</h3>
+          <ul>
+            {company.phones.map((phone) => (
+              <li>
+                <a href={phone.href}>{phone.label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <div class="contact-row">
+        <Icon name="mail" />
+        <div>
+          <h3>Email</h3>
+          <a href={`mailto:${company.email}`}>{company.email}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

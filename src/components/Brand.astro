@@ -1,0 +1,24 @@
+---
+import { brandLogo } from "../data/company";
+---
+
+<a
+  class="brand"
+  href="#beranda"
+>
+  {brandLogo ? (
+    <img
+      src={brandLogo.src}
+      alt={brandLogo.alt}
+      width={brandLogo.width}
+      height={brandLogo.height}
+    />
+  ) : (
+    <span class="brand-monogram" aria-hidden="true">
+      WCF<span></span>
+    </span>
+  )}
+  <span class="brand-name">
+    WISH CARE FAST<small>MITRA OUTSOURCING ANDA</small>
+  </span>
+</a>

@@ -1,0 +1,31 @@
+---
+import { gallery } from "../data/company";
+---
+
+{gallery.length > 0 && (
+  <section
+    id="dokumentasi"
+    class="section soft"
+    aria-labelledby="gallery-title"
+  >
+    <div class="container">
+      <p class="eyebrow">DOKUMENTASI</p>
+      <h2 id="gallery-title">Dedikasi dalam setiap aktivitas.</h2>
+      <div class="gallery-grid">
+        {gallery.map((photo) => (
+          <figure>
+            <img
+              src={photo.src}
+              alt={photo.alt}
+              width={photo.width}
+              height={photo.height}
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>{photo.alt}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

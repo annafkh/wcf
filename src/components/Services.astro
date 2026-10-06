@@ -1,0 +1,44 @@
+﻿---
+import { services } from "../data/services";
+import { company } from "../data/company";
+import Icon from "./Icon.astro";
+---
+
+<section id="layanan" class="section soft" aria-labelledby="services-title">
+  <div class="container">
+    <div class="section-heading" data-reveal>
+      <div>
+        <p class="eyebrow">02 / LAYANAN KAMI</p>
+        <h2 id="services-title">
+          Enam keahlian.
+          <br />
+          Satu mitra andalan.
+        </h2>
+      </div>
+      <p>
+        Temukan dukungan tenaga kerja yang sesuai dengan kebutuhan operasional
+        perusahaan Anda.
+      </p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 service-grid">
+      {services.map((service, i) => (
+        <article class="service-card" data-reveal>
+          <div class="card-top">
+            <span class="icon-tile">
+              <Icon name={service.icon} size={28} />
+            </span>
+            <span class="index">0{i + 1}</span>
+          </div>
+          <h3>{service.title}</h3>
+          <p>{service.description}</p>
+          <a
+            href={`${company.whatsapp}?text=${encodeURIComponent(`Halo PT Wish Care Fast, saya ingin berkonsultasi tentang layanan ${service.title}.`)}`}
+            aria-label={`Diskusikan kebutuhan layanan ${service.title}`}
+          >
+            Diskusikan kebutuhan <Icon name="arrow" size={19} />
+          </a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

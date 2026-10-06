@@ -1,0 +1,27 @@
+---
+import { visionMission } from "../data/company";
+---
+
+{visionMission && (
+  <section id="visi-misi" class="section vision" aria-labelledby="vision-title">
+    <div class="container vision-grid">
+      <div>
+        <p class="eyebrow">VISI & MISI</p>
+        <h2 id="vision-title">
+          Arah yang jelas.
+          <br />
+          Tujuan bersama.
+        </h2>
+        <p>{visionMission.vision}</p>
+      </div>
+      <ol class="mission-list">
+        {visionMission.missions.map((mission, i) => (
+          <li>
+            <span>0{i + 1}</span>
+            <p>{mission}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+)}

@@ -1,0 +1,30 @@
+---
+import { clients } from "../data/company";
+---
+
+{clients.length > 0 && (
+  <section id="klien" class="section" aria-labelledby="clients-title">
+    <div class="container">
+      <p class="eyebrow">KLIEN KAMI</p>
+      <h2 id="clients-title">Bertumbuh bersama mitra kami.</h2>
+      <div class="client-grid">
+        {clients.map((client) => (
+          <div>
+            <img
+              src={client.src}
+              alt={client.alt}
+              width={client.width}
+              height={client.height}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        ))}
+        <div class="client-category">
+          <span>Hunian & Properti</span>
+          <strong>Kos-kosan</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+)}

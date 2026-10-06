@@ -1,0 +1,116 @@
+---
+import Icon from "./Icon.astro";
+import { company } from "../data/company";
+import "../styles/hero.css";
+---
+
+<section id="beranda" class="hero" aria-labelledby="hero-title">
+  <div class="hero-orbit orbit-left" aria-hidden="true"></div>
+  <div class="hero-orbit orbit-right" aria-hidden="true"></div>
+  <div class="container hero-stage">
+    <div class="hero-copy">
+      <p class="eyebrow">
+        <span></span> MITRA OUTSOURCING PROFESIONAL
+      </p>
+      <h1 id="hero-title">
+        Tenaga Kerja Tepat.
+        <br />
+        Bisnis Melaju <em>Lebih Hebat.</em>
+      </h1>
+      <p class="hero-description">
+        Dukungan tenaga kerja yang andal untuk operasional yang lebih efisien.
+        Bersama PT Wish Care Fast, fokuskan energi pada pertumbuhan bisnis Anda.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-gold" href={company.whatsapp}>
+          Konsultasi Sekarang{" "}
+          <span>
+            <Icon name="arrow" size={19} />
+          </span>
+        </a>
+        <a class="hero-secondary" href="#layanan">
+          Jelajahi Layanan <Icon name="right" size={18} />
+        </a>
+      </div>
+      <p class="hero-location">
+        <Icon name="pin" size={14} /> Berbasis di Malang. Siap menjadi mitra
+        Anda.
+      </p>
+    </div>
+    <div class="hero-people">
+      <figure class="people-card people-left">
+        <div class="portrait-frame">
+          <img
+            src="/images/gallery/koordinasi-petugas.webp"
+            alt="Koordinasi petugas dalam dokumentasi PT Wish Care Fast"
+            width="514"
+            height="513"
+            fetchpriority="high"
+          />
+        </div>
+        <figcaption class="portrait-caption">
+          <span class="caption-icon">
+            <Icon name="shield" size={22} />
+          </span>
+          <span>
+            <small>ANDAL DALAM SETIAP PERAN</small>
+            <strong>Tenaga Kerja Profesional</strong>
+          </span>
+        </figcaption>
+        <span class="floating-tag tag-left" aria-hidden="true">
+          <Icon name="check" size={15} /> Siap mendukung bisnis Anda
+        </span>
+      </figure>
+      <figure class="people-card people-right">
+        <div class="portrait-frame">
+          <img
+            src="/images/gallery/perawatan-lantai.webp"
+            alt="Petugas WCF melakukan perawatan lantai dengan mesin pembersih"
+            width="360"
+            height="361"
+          />
+        </div>
+        <figcaption class="portrait-caption">
+          <span class="caption-icon">
+            <Icon name="sparkles" size={22} />
+          </span>
+          <span>
+            <small>DEDIKASI DALAM PELAYANAN</small>
+            <strong>Cleaning Service</strong>
+          </span>
+        </figcaption>
+        <span class="floating-tag tag-right" aria-hidden="true">
+          <Icon name="sparkles" size={15} /> Lingkungan kerja lebih nyaman
+        </span>
+      </figure>
+    </div>
+    <a class="hero-explore" href="#tentang">
+      Kenali WCF lebih dekat <Icon name="down" size={17} />
+    </a>
+  </div>
+  <div class="hero-summary container">
+    <div class="summary-intro">
+      <span class="summary-icon">
+        <Icon name="shield" size={27} />
+      </span>
+      <p>
+        Mitra untuk operasional
+        <br />
+        <strong>yang lebih baik.</strong>
+      </p>
+    </div>
+    <div class="summary-stat">
+      <strong>{company.founded}</strong>
+      <span>Tahun Berdiri</span>
+    </div>
+    <div class="summary-stat">
+      <strong>
+        6<span>+</span>
+      </strong>
+      <span>Layanan Utama</span>
+    </div>
+    <a href="#layanan" class="summary-link">
+      Temukan solusi untuk bisnis Anda <Icon name="arrow" size={22} />
+    </a>
+  </div>
+</section>

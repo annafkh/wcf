@@ -1,0 +1,50 @@
+---
+import ArrowUpRight from "@lucide/astro/icons/arrow-up-right";
+import ArrowRight from "@lucide/astro/icons/arrow-right";
+import Files from "@lucide/astro/icons/files";
+import Sparkles from "@lucide/astro/icons/sparkles";
+import ShieldCheck from "@lucide/astro/icons/shield-check";
+import CarFront from "@lucide/astro/icons/car-front";
+import Monitor from "@lucide/astro/icons/monitor";
+import Factory from "@lucide/astro/icons/factory";
+import MapPin from "@lucide/astro/icons/map-pin";
+import Phone from "@lucide/astro/icons/phone";
+import Mail from "@lucide/astro/icons/mail";
+import Menu from "@lucide/astro/icons/menu";
+import Check from "@lucide/astro/icons/check";
+import MessageCircle from "@lucide/astro/icons/message-circle";
+import ChevronDown from "@lucide/astro/icons/chevron-down";
+import FileCheck from "@lucide/astro/icons/file-check";
+const icons = {
+  arrow: ArrowUpRight,
+  right: ArrowRight,
+  files: Files,
+  sparkles: Sparkles,
+  shield: ShieldCheck,
+  car: CarFront,
+  monitor: Monitor,
+  factory: Factory,
+  pin: MapPin,
+  phone: Phone,
+  mail: Mail,
+  menu: Menu,
+  check: Check,
+  chat: MessageCircle,
+  down: ChevronDown,
+  document: FileCheck,
+};
+interface Props {
+  name: keyof typeof icons;
+  size?: number;
+  class?: string;
+}
+const { name, size = 22, class: className } = Astro.props;
+const Component = icons[name];
+---
+
+<Component
+  size={size}
+  stroke-width={1.6}
+  class={className}
+  aria-hidden="true"
+/>

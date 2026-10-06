@@ -1,0 +1,36 @@
+---
+import { advantages } from "../data/advantages";
+import Icon from "./Icon.astro";
+---
+
+<section id="keunggulan" class="section" aria-labelledby="advantages-title">
+  <div class="container advantages-grid">
+    <div data-reveal>
+      <p class="eyebrow">03 / KEUNGGULAN WCF</p>
+      <h2 id="advantages-title">
+        Lebih dari
+        <br />
+        penyedia tenaga kerja.
+      </h2>
+      <p class="section-description">
+        Kecepatan, keandalan, dan kepuasan pelanggan menjadi prioritas dalam
+        layanan kami.
+      </p>
+      <a class="button button-navy" href="#kontak">
+        Mari Bermitra <Icon name="arrow" size={19} />
+      </a>
+    </div>
+    <ol class="advantage-list">
+      {advantages.map((advantage, i) => (
+        <li data-reveal>
+          <span class="advantage-number">0{i + 1}</span>
+          <div>
+            <h3>{advantage.title}</h3>
+            {advantage.description && <p>{advantage.description}</p>}
+          </div>
+          <Icon name="check" size={20} />
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
