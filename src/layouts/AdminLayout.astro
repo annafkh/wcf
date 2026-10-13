@@ -1,0 +1,25 @@
+---
+import "../styles/admin.css";
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="theme-color" content="#102653" />
+    <title>{title} | Admin WCF</title>
+    <link rel="icon" href="/favicon.png" />
+  </head>
+  <body>
+    <a class="admin-skip" href="#admin-main">
+      Lewati navigasi
+    </a>
+    <slot />
+  </body>
+</html>

@@ -1,11 +1,5 @@
 export const services = [
   {
-    title: "Administrasi",
-    icon: "files",
-    description:
-      "Dukungan pengelolaan dokumen, pencatatan data, dan administrasi untuk kelancaran aktivitas kantor.",
-  },
-  {
     title: "Cleaning Service",
     icon: "sparkles",
     description:
@@ -24,15 +18,21 @@ export const services = [
       "Tenaga pengemudi untuk menunjang mobilitas dan kebutuhan transportasi operasional perusahaan.",
   },
   {
-    title: "IT Service",
-    icon: "monitor",
-    description:
-      "Dukungan teknis perangkat komputer dan teknologi informasi untuk aktivitas kerja sehari-hari.",
-  },
-  {
     title: "Operator Produksi",
     icon: "factory",
     description:
       "Tenaga operasional untuk mendukung proses produksi sesuai prosedur kerja perusahaan.",
+  },
+  {
+    title: "Administrasi",
+    icon: "files",
+    description:
+      "Dukungan pengelolaan dokumen, pencatatan data, dan administrasi untuk kelancaran aktivitas kantor.",
+  },
+  {
+    title: "IT Service",
+    icon: "monitor",
+    description:
+      "Dukungan teknis perangkat komputer dan teknologi informasi untuk aktivitas kerja sehari-hari.",
   },
 ] as const;

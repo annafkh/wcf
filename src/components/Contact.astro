@@ -1,5 +1,6 @@
 ---
-import { company } from "../data/company";
+import { publicCompany } from "../server/content";
+const company = publicCompany(Astro.locals.content);
 import Icon from "./Icon.astro";
 ---
 

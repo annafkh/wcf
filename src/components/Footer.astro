@@ -1,6 +1,8 @@
 ---
 import Brand from "./Brand.astro";
-import { company, navigation } from "../data/company";
+import { publicCompany, publicNavigation } from "../server/content";
+const company = publicCompany(Astro.locals.content);
+const navigation = publicNavigation(Astro.locals.content);
 import { services } from "../data/services";
 ---
 

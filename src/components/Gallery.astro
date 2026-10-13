@@ -1,5 +1,5 @@
 ---
-import { gallery } from "../data/company";
+const gallery = Astro.locals.content.gallery.filter((item) => item.visible);
 ---
 
 {gallery.length > 0 && (
@@ -14,6 +14,7 @@ import { gallery } from "../data/company";
       <div class="gallery-grid">
         {gallery.map((photo) => (
           <figure>
+            <a class="gallery-expand" href={photo.src} aria-label={`Perbesar foto: ${photo.alt}`}>
             <img
               src={photo.src}
               alt={photo.alt}
@@ -22,6 +23,7 @@ import { gallery } from "../data/company";
               loading="lazy"
               decoding="async"
             />
+            </a>
             <figcaption>{photo.alt}</figcaption>
           </figure>
         ))}
@@ -29,3 +31,54 @@ import { gallery } from "../data/company";
     </div>
   </section>
 )}
+
+<dialog class="photo-viewer" aria-label="Foto dokumentasi">
+  <button class="photo-close" type="button" aria-label="Tutup foto"><span aria-hidden="true">×</span></button>
+  <figure>
+    <img class="photo-full" alt="" />
+  </figure>
+</dialog>
+
+<script>
+  const viewer = document.querySelector<HTMLDialogElement>('.photo-viewer');
+  if (viewer) {
+    const full = viewer.querySelector<HTMLImageElement>('.photo-full')!;
+    let trigger: HTMLAnchorElement | null = null;
+    let previousOverflow = '';
+    document.querySelectorAll<HTMLAnchorElement>('.gallery-expand').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        const thumbnail = link.querySelector('img')!;
+        trigger = link;
+        full.src = link.href;
+        full.alt = thumbnail.alt;
+        previousOverflow = document.body.style.overflow;
+        viewer.showModal();
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    viewer.querySelector('button')!.addEventListener('click', () => viewer.close());
+    viewer.addEventListener('click', (event) => {
+      if (event.target === viewer) viewer.close();
+    });
+    viewer.addEventListener('close', () => {
+      document.body.style.overflow = previousOverflow;
+      full.removeAttribute('src');
+      trigger?.focus({ preventScroll: true });
+    });
+  }
+</script>
+
+<style>
+  .gallery-expand { display: block; position: relative; height: 100%; color: white; cursor: zoom-in; }
+  .gallery-expand:focus-visible { outline: 3px solid #ffbc57; outline-offset: -4px; }
+  .photo-viewer { position: fixed; inset: 0; margin: auto; width: 100vw; height: 100dvh; max-width: 100vw; max-height: 100dvh; padding: 64px 20px 24px; border: 0; background: transparent; color: white; }
+  .photo-viewer[open] { display: flex; align-items: center; justify-content: center; }
+  .photo-viewer::backdrop { background: rgb(7 18 38 / 55%); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  .photo-viewer figure { margin: 0; max-width: 100%; pointer-events: none; }
+  .photo-full { display: block; width: auto; height: auto; max-width: 100%; max-height: calc(100dvh - 88px); object-fit: contain; pointer-events: auto; }
+  .photo-close { position: absolute; right: max(16px, env(safe-area-inset-right)); top: max(12px, env(safe-area-inset-top)); display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: rgb(0 0 0 / 35%); color: white; font: inherit; cursor: pointer; }
+  .photo-close span { font-size: 1.5rem; }
+  .photo-close:focus-visible { outline: 3px solid white; outline-offset: 3px; }
+</style>

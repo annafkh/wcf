@@ -1,8 +1,9 @@
 ---
-import { clients } from "../data/company";
+const clients = Astro.locals.content.clients.filter((item) => item.visible);
+const showHousing = Astro.locals.content.showHousing;
 ---
 
-{clients.length > 0 && (
+{(clients.length > 0 || showHousing) && (
   <section id="klien" class="section" aria-labelledby="clients-title">
     <div class="container">
       <p class="eyebrow">KLIEN KAMI</p>
@@ -20,10 +21,12 @@ import { clients } from "../data/company";
             />
           </div>
         ))}
-        <div class="client-category">
-          <span>Hunian & Properti</span>
-          <strong>Kos-kosan</strong>
-        </div>
+        {showHousing && (
+          <div class="client-category">
+            <span>Hunian & Properti</span>
+            <strong>Kos-kosan</strong>
+          </div>
+        )}
       </div>
     </div>
   </section>

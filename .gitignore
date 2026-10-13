@@ -4,3 +4,7 @@ dist/
 .env
 *.log
 qa-results/
+.data/
+
+.env.*
+!.env.example

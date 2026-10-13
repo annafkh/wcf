@@ -1,0 +1,122 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { randomBytes } from "node:crypto";
+import {
+  boundedForm,
+  clearLoginAttempts,
+  constantEqual,
+  createSession,
+  credentials,
+  getSession,
+  loginAllowed,
+  validOrigin,
+  verifyPassword,
+} from "../../server/auth";
+if (await getSession(Astro)) return Astro.redirect("/admin");
+const account = await credentials();
+let error = "";
+if (Astro.request.method === "POST") {
+  if (!validOrigin(Astro))
+    return new Response("Permintaan ditolak.", { status: 403 });
+  try {
+    const form = await boundedForm(Astro.request, 16_384);
+    const token = Astro.cookies.get("wcf_login")?.value;
+    if (!token || !constantEqual(String(form.get("csrf") || ""), token))
+      throw new Error("Formulir kedaluwarsa. Silakan coba lagi.");
+    if (!loginAllowed()) {
+      Astro.response.status = 429;
+      throw new Error("Terlalu banyak percobaan. Coba kembali dalam 15 menit.");
+    }
+    const password = String(form.get("password") || "");
+    const email = String(form.get("email") || "")
+      .trim()
+      .toLowerCase();
+    if (
+      !account ||
+      password.length > 256 ||
+      email !== account.email ||
+      !(await verifyPassword(password, account.passwordHash))
+    )
+      throw new Error("Email atau kata sandi tidak sesuai.");
+    clearLoginAttempts();
+    createSession(Astro, account);
+    Astro.cookies.delete("wcf_login", { path: "/admin" });
+    return Astro.redirect("/admin", 303);
+  } catch (e) {
+    error = e instanceof Error ? e.message : "Login tidak berhasil.";
+  }
+}
+const csrf = randomBytes(32).toString("hex");
+Astro.cookies.set("wcf_login", csrf, {
+  path: "/admin",
+  httpOnly: true,
+  sameSite: "strict",
+  secure: Astro.url.protocol === "https:",
+  maxAge: 3600,
+});
+---
+
+<AdminLayout title="Login Admin">
+  <main class="login-page" id="admin-main">
+    <a class="admin-brand" href="/">
+      <img src="/logo/wcf.webp" width="42" height="48" alt="WCF" />
+      <span>
+        WISH CARE FAST<small>CONTENT MANAGEMENT</small>
+      </span>
+    </a>
+    <section class="login-card" aria-labelledby="login-title">
+      <p class="admin-eyebrow">KHUSUS ADMINISTRATOR</p>
+      <h1 id="login-title">Selamat datang kembali.</h1>
+      <p class="admin-muted">
+        Kelola informasi terbaru perusahaan dalam satu tempat.
+      </p>
+      {error && (
+        <p class="notice error" role="alert">
+          {error}
+        </p>
+      )}
+      {Astro.url.searchParams.has("changed") && (
+        <p class="notice" role="status">
+          Kata sandi berhasil diubah. Silakan masuk kembali.
+        </p>
+      )}
+      {account ? (
+        <form method="post">
+          <input type="hidden" name="csrf" value={csrf} />
+          <label>
+            Email admin
+            <input
+              name="email"
+              type="email"
+              autocomplete="username"
+              required
+              maxlength="254"
+            />
+          </label>
+          <label>
+            Kata sandi
+            <input
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              required
+              maxlength="256"
+            />
+          </label>
+          <button class="admin-button primary" type="submit">
+            Masuk ke Dashboard <span aria-hidden="true">↗</span>
+          </button>
+        </form>
+      ) : (
+        <p class="notice">
+          Akun admin belum diaktifkan. Hubungi pengelola server untuk menyiapkan
+          akun pertama.
+        </p>
+      )}
+      <a class="back-link" href="/">
+        ← Kembali ke website
+      </a>
+    </section>
+    <p class="login-foot">PT Wish Care Fast · Akses pengelolaan konten</p>
+  </main>
+</AdminLayout>

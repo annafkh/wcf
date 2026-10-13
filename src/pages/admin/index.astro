@@ -1,0 +1,450 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { getSession } from "../../server/auth";
+import { getContent } from "../../server/content";
+const session = await getSession(Astro);
+if (!session) return Astro.redirect("/admin/login");
+const content = await getContent();
+const tabs = [
+  { id: "clients", label: "Mitra Kerja", number: "01" },
+  { id: "gallery", label: "Dokumentasi", number: "02" },
+  { id: "contacts", label: "Informasi Kontak", number: "03" },
+  { id: "account", label: "Keamanan Akun", number: "04" },
+];
+const tab =
+  tabs.find((t) => t.id === Astro.url.searchParams.get("tab"))?.id || "clients";
+const mediaTab = tab === "clients" || tab === "gallery" ? tab : null;
+const items = mediaTab ? content[mediaTab] : [];
+const editing = items.find(
+  (item) => item.id === Astro.url.searchParams.get("edit"),
+);
+const current = tabs.find((t) => t.id === tab)!;
+const error = Astro.url.searchParams.get("error");
+---
+
+<AdminLayout title={current.label}>
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <a class="admin-brand" href="/admin">
+        <img src="/logo/wcf.webp" alt="WCF" width="42" height="48" />
+        <span>
+          WISH CARE FAST<small>ADMIN DASHBOARD</small>
+        </span>
+      </a>
+      <p class="sidebar-label">KELOLA WEBSITE</p>
+      <nav aria-label="Menu admin">
+        {tabs.map((item) => (
+          <a
+            href={`/admin?tab=${item.id}`}
+            aria-current={tab === item.id ? "page" : undefined}
+          >
+            <span>{item.number}</span>
+            {item.label}
+          </a>
+        ))}
+      </nav>
+      <div class="sidebar-bottom">
+        <span>Masuk sebagai admin</span>
+        <strong>{session.email}</strong>
+        <form action="/admin/action" method="post">
+          <input type="hidden" name="csrf" value={session.csrf} />
+          <input type="hidden" name="operation" value="logout" />
+          <button class="logout" type="submit">
+            Keluar dari akun ↗
+          </button>
+        </form>
+      </div>
+    </aside>
+    <main class="admin-main" id="admin-main" tabindex="-1">
+      <header class="admin-top">
+        <span>PT WISH CARE FAST / PENGELOLAAN KONTEN</span>
+        <a href="/" target="_blank" rel="noopener">
+          Lihat Website ↗
+        </a>
+      </header>
+      <div class="admin-title">
+        <div>
+          <p class="admin-eyebrow">RUANG KERJA ADMIN</p>
+          <h1>{current.label}</h1>
+          <p class="admin-muted">
+            {mediaTab
+              ? "Perbarui konten, atur urutan, dan pilih yang ingin ditampilkan."
+              : tab === "contacts"
+                ? "Pastikan calon mitra dapat menghubungi perusahaan dengan mudah."
+                : "Gunakan kata sandi yang kuat untuk melindungi akses dashboard."}
+          </p>
+        </div>
+        <span class="live-badge">● Perubahan langsung tampil</span>
+      </div>
+      {error && (
+        <p class="notice error" role="alert">
+          {error.slice(0, 220)}
+        </p>
+      )}
+      {Astro.url.searchParams.has("saved") && (
+        <p class="notice" role="status">
+          Perubahan berhasil disimpan dan sudah tampil di website.
+        </p>
+      )}
+      <div class="admin-stats">
+        <div>
+          <span>Mitra ditampilkan</span>
+          <strong>{content.clients.filter((i) => i.visible).length}</strong>
+        </div>
+        <div>
+          <span>Foto ditampilkan</span>
+          <strong>{content.gallery.filter((i) => i.visible).length}</strong>
+        </div>
+        <div>
+          <span>Terakhir diperbarui</span>
+          <strong class="updated-at">
+            {content.updatedAt
+              ? new Intl.DateTimeFormat("id-ID", {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                  timeZone: "Asia/Jakarta",
+                }).format(new Date(content.updatedAt)) + " WIB"
+              : "Konten company profile"}
+          </strong>
+        </div>
+      </div>
+      {mediaTab && (
+        <div class="editor-grid">
+          <section
+            class="admin-panel editor-panel"
+            aria-labelledby="editor-title"
+          >
+            <div class="panel-heading">
+              <h2 id="editor-title">
+                {editing ? "Edit" : "Tambah"}{" "}
+                {mediaTab === "clients" ? "mitra kerja" : "dokumentasi"}
+              </h2>
+              {editing && <a href={`/admin?tab=${tab}`}>Batal edit</a>}
+            </div>
+            <form
+              action="/admin/action"
+              method="post"
+              enctype="multipart/form-data"
+              class="media-form"
+            >
+              <input type="hidden" name="csrf" value={session.csrf} />
+              <input type="hidden" name="revision" value={content.revision} />
+              <input type="hidden" name="operation" value="save" />
+              <input type="hidden" name="tab" value={tab} />
+              <input type="hidden" name="id" value={editing?.id || ""} />
+              <label>
+                {mediaTab === "clients" ? "Nama mitra" : "Keterangan foto"}
+                <input
+                  name="alt"
+                  maxlength="180"
+                  required
+                  value={editing?.alt || ""}
+                  placeholder={
+                    mediaTab === "clients"
+                      ? "Nama perusahaan / organisasi"
+                      : "Jelaskan kegiatan dalam foto"
+                  }
+                />
+              </label>
+              <label>
+                {mediaTab === "clients" ? "Logo mitra" : "Foto dokumentasi"}
+                <span class="upload-box">
+                  <span class="upload-symbol" aria-hidden="true">
+                    ↑
+                  </span>
+                  <span>Pilih gambar dari perangkat</span>
+                  <input
+                    type="file"
+                    name="image"
+                    accept="image/jpeg,image/png,image/webp"
+                    required={!editing}
+                    aria-describedby="image-help"
+                  />
+                </span>
+              </label>
+              <p id="image-help" class="field-hint">
+                JPEG, PNG, atau WebP. Maksimal 5 MB dan 12 megapiksel.{" "}
+                {editing && "Kosongkan untuk mempertahankan gambar lama."}
+              </p>
+              <img
+                class="upload-preview"
+                src={editing?.src}
+                alt="Pratinjau gambar yang dipilih"
+                width="300"
+                height="200"
+                hidden={!editing}
+              />
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  name="visible"
+                  checked={editing ? editing.visible : true}
+                />{" "}
+                Tampilkan di website
+              </label>
+              <button class="admin-button primary" type="submit">
+                {editing ? "Simpan Perubahan" : "Tambah & Simpan"}{" "}
+                <span aria-hidden="true">↗</span>
+              </button>
+            </form>
+          </section>
+          <section class="admin-panel media-list" aria-labelledby="list-title">
+            <div class="panel-heading">
+              <h2 id="list-title">
+                {mediaTab === "clients" ? "Daftar mitra" : "Galeri dokumentasi"}
+              </h2>
+              <span>{items.length} konten</span>
+            </div>
+            <p class="field-hint list-hint">
+              Urutan di bawah mengikuti urutan tampil di website.
+            </p>
+            {items.length === 0 && (
+              <p class="empty-state">
+                Belum ada konten. Tambahkan melalui formulir di samping.
+              </p>
+            )}
+            {items.map((item, index) => (
+              <article class="media-row">
+                <img
+                  class:list={[
+                    "media-thumb",
+                    { "logo-thumb": mediaTab === "clients" },
+                  ]}
+                  src={item.src}
+                  alt={item.alt}
+                  width="80"
+                  height="72"
+                  loading="lazy"
+                />
+                <div class="media-info">
+                  <h3>{item.alt}</h3>
+                  <span class:list={["item-status", { hidden: !item.visible }]}>
+                    {item.visible ? "Ditampilkan" : "Disembunyikan"}
+                  </span>
+                  <a
+                    class="edit-link"
+                    href={`/admin?tab=${tab}&edit=${item.id}#editor-title`}
+                  >
+                    Edit konten
+                  </a>
+                </div>
+                <form class="row-actions" action="/admin/action" method="post">
+                  <input type="hidden" name="csrf" value={session.csrf} />
+                  <input
+                    type="hidden"
+                    name="revision"
+                    value={content.revision}
+                  />
+                  <input type="hidden" name="tab" value={tab} />
+                  <input type="hidden" name="id" value={item.id} />
+                  <button
+                    type="submit"
+                    name="operation"
+                    value="up"
+                    disabled={index === 0}
+                    aria-label={`Naikkan urutan ${item.alt}`}
+                  >
+                    ↑
+                  </button>
+                  <button
+                    type="submit"
+                    name="operation"
+                    value="down"
+                    disabled={index === items.length - 1}
+                    aria-label={`Turunkan urutan ${item.alt}`}
+                  >
+                    ↓
+                  </button>
+                  <button
+                    type="submit"
+                    class="delete-button"
+                    name="operation"
+                    value="delete"
+                    data-delete={item.alt}
+                  >
+                    Hapus
+                  </button>
+                </form>
+              </article>
+            ))}
+            {mediaTab === "clients" && (
+              <form class="housing-form" action="/admin/action" method="post">
+                <input type="hidden" name="csrf" value={session.csrf} />
+                <input type="hidden" name="revision" value={content.revision} />
+                <input type="hidden" name="operation" value="housing" />
+                <input type="hidden" name="tab" value="clients" />
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="visible"
+                    checked={content.showHousing}
+                  />{" "}
+                  Tampilkan kategori Kos-kosan
+                </label>
+                <button class="admin-button secondary" type="submit">
+                  Simpan kategori
+                </button>
+              </form>
+            )}
+          </section>
+        </div>
+      )}
+      {tab === "contacts" && (
+        <section class="admin-panel settings-panel">
+          <h2>Kontak perusahaan</h2>
+          <p class="admin-muted">
+            Perubahan berlaku untuk bagian kontak, footer, tombol WhatsApp, dan
+            metadata perusahaan.
+          </p>
+          <form action="/admin/action" method="post">
+            <input type="hidden" name="csrf" value={session.csrf} />
+            <input type="hidden" name="revision" value={content.revision} />
+            <input type="hidden" name="operation" value="contacts" />
+            <input type="hidden" name="tab" value="contacts" />
+            <label>
+              Alamat kantor
+              <textarea
+                name="address"
+                required
+                maxlength="500"
+                rows="3"
+              >{content.contacts.address}</textarea>
+            </label>
+            <div class="form-columns">
+              <label>
+                Email perusahaan
+                <input
+                  type="email"
+                  name="email"
+                  value={content.contacts.email}
+                  required
+                  maxlength="254"
+                />
+              </label>
+              <label>
+                Nomor WhatsApp
+                <input
+                  type="tel"
+                  name="whatsapp"
+                  value={content.contacts.whatsapp}
+                  required
+                  maxlength="30"
+                />
+                <span class="field-hint">Contoh format: 6281333949063</span>
+              </label>
+            </div>
+            <label>
+              Nomor telepon
+              <textarea
+                name="phones"
+                required
+                maxlength="250"
+                rows="4"
+              >{content.contacts.phones.join('\n')}</textarea>
+              <span class="field-hint">
+                Satu nomor per baris. Maksimal 6 nomor.
+              </span>
+            </label>
+            <button class="admin-button primary" type="submit">
+              Simpan Informasi Kontak ↗
+            </button>
+          </form>
+        </section>
+      )}
+      {tab === "account" && (
+        <section class="admin-panel settings-panel">
+          <h2>Ganti kata sandi</h2>
+          <p class="admin-muted">
+            Semua sesi akan berakhir setelah kata sandi diubah.
+          </p>
+          <form action="/admin/action" method="post">
+            <input type="hidden" name="csrf" value={session.csrf} />
+            <input type="hidden" name="operation" value="password" />
+            <input type="hidden" name="tab" value="account" />
+            <label>
+              Kata sandi saat ini
+              <input
+                type="password"
+                name="currentPassword"
+                autocomplete="current-password"
+                required
+                maxlength="256"
+              />
+            </label>
+            <label>
+              Kata sandi baru
+              <input
+                type="password"
+                name="newPassword"
+                autocomplete="new-password"
+                required
+                minlength="12"
+                maxlength="256"
+              />
+              <span class="field-hint">
+                Minimal 12 karakter. Gunakan kata sandi yang unik.
+              </span>
+            </label>
+            <label>
+              Ulangi kata sandi baru
+              <input
+                type="password"
+                name="confirmPassword"
+                autocomplete="new-password"
+                required
+                minlength="12"
+                maxlength="256"
+              />
+            </label>
+            <button class="admin-button primary" type="submit">
+              Ganti Kata Sandi
+            </button>
+          </form>
+        </section>
+      )}
+      <footer class="admin-footer">
+        © 2026 PT Wish Care Fast · Dashboard Admin
+      </footer>
+    </main>
+  </div>
+</AdminLayout>
+<script>
+  document
+    .querySelectorAll<HTMLButtonElement>("[data-delete]")
+    .forEach((button) =>
+      button.addEventListener("click", (event) => {
+        if (
+          !confirm(
+            `Hapus "${button.dataset.delete}" dari website? Tindakan ini tidak dapat dibatalkan.`,
+          )
+        )
+          event.preventDefault();
+      }),
+    );
+  const input = document.querySelector<HTMLInputElement>('input[type="file"]');
+  const preview = document.querySelector<HTMLImageElement>(".upload-preview");
+  const originalPreview = preview?.getAttribute("src");
+  let previewUrl: string | undefined;
+  input?.addEventListener("change", () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    const file = input.files?.[0];
+    input.setCustomValidity(
+      file && file.size > 5 * 1024 * 1024 ? "Ukuran gambar maksimal 5 MB." : "",
+    );
+    input.reportValidity();
+    if (file && preview && input.validity.valid) {
+      previewUrl = URL.createObjectURL(file);
+      preview.src = previewUrl;
+      preview.hidden = false;
+    } else if (preview) {
+      if (originalPreview) preview.src = originalPreview;
+      else preview.removeAttribute("src");
+      preview.hidden = !originalPreview;
+    }
+  });
+  document.querySelectorAll<HTMLFormElement>("form").forEach((form) =>
+    form.addEventListener("submit", () => {
+      form.setAttribute("aria-busy", "true");
+    }),
+  );
+</script>
