@@ -12,6 +12,7 @@
     "build": "astro check && astro build",
     "start": "node ./dist/server/entry.mjs",
     "admin:setup": "node scripts/admin-setup.mjs",
+    "migrate": "node scripts/db-setup.mjs",
     "db:setup": "node scripts/db-setup.mjs",
     "db:create-local": "node scripts/db-create-local.mjs"
   },

@@ -6,7 +6,7 @@ Dashboard `/admin` mengelola mitra, dokumentasi, dan kontak. Aplikasi berjalan p
 
 1. Buat database dan pengguna pada panel hosting, atau gunakan MySQL lokal.
 2. Isi `.env`: DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD. Jangan kirim password melalui chat atau commit ke Git. Environment panel hosting lebih diutamakan.
-3. Untuk lokal, jalankan `npm run db:create-local` dengan akun yang memiliki izin CREATE DATABASE. Lalu jalankan `npm run db:setup`. Tabel dibuat bila belum ada. Akun/konten dari `.data/admin.json` dan `.data/content.json` dimigrasikan tanpa menimpa data SQL yang sudah ada. File lama dan password akun tetap dipertahankan.
+3. Untuk lokal, jalankan `npm run db:create-local` dengan akun yang memiliki izin CREATE DATABASE. Setelah database dipilih/dibuat dan `.env` diisi, jalankan `npm run migrate` (alias `npm run db:setup`). Tabel dibuat bila belum ada. Akun/konten dari `.data/admin.json` dan `.data/content.json` dimigrasikan tanpa menimpa data SQL yang sudah ada. File lama dan password akun tetap dipertahankan.
 4. Alternatif: pilih database di phpMyAdmin lalu impor `database/schema.sql`. Jalankan db:setup juga jika perlu migrasi file lama.
 5. Bila belum memiliki akun, jalankan `npm run admin:setup -- --email=alamat@email.com`. Password acak ditampilkan di terminal. Gunakan --reset hanya untuk reset yang disengaja.
 6. Jalankan `npm run dev`, atau `npm run build` lalu `npm start`.
